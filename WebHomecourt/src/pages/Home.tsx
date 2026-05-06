@@ -104,7 +104,7 @@ function Home() {
     <div>
     <Nav current="Home" />
     <section className="px-4 md:px-14 py-5 bg-zinc-100 w-full flex flex-col gap-6">
-    <h1>SI SIRVE DEV</h1>
+    <h1>PROBANDO POR DOS</h1>
       <div>
         {juego ? (<MarcadorActivo juego={juego} />
         ) : (<NextGame />)}
