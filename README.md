@@ -8,5 +8,5 @@ Project Lakers Homecourt seeks to create a web application for the LA Lakers. Th
 
 | Entorno | Rama | Responsable | URL |
 |---------|------|-------------|-----|
-| Producción | `main` | @skymalign | [https://...](https://web-homecourt-cielo.vercel.app/) |
-| Desarrollo | `develop` | @skymalign | https://... |
+| Producción | `main` | @skymalign | [main](https://web-homecourt-cielo.vercel.app/) |
+| Desarrollo | `develop` | @skymalign | [dev](https://dev-web-homecourt-cielo.vercel.app/) |
