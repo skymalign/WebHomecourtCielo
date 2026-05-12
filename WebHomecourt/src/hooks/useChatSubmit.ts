@@ -13,6 +13,9 @@ type UseChatSubmitParams = {
   setError: (error: string | null) => void
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>
   setMessage: (message: string) => void
+  selectedImage: File | null
+  imagePreview: string | null
+  clearImageSelection: () => void
 }
 
 export function useChatSubmit({
@@ -25,13 +28,16 @@ export function useChatSubmit({
   setError,
   setMessages,
   setMessage,
+  selectedImage,
+  imagePreview,
+  clearImageSelection,
 }: UseChatSubmitParams) {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     let cleanMessage = message.trim()
     cleanMessage = sanitizeMessage(cleanMessage)
-    if (!cleanMessage) {
-      setError("Enter a message.")
+    if (!cleanMessage && !selectedImage) {
+      setError("Enter a message or attach an image.")
       return
     }
     if (!session) {
@@ -54,6 +60,7 @@ export function useChatSubmit({
       message: cleanMessage,
       created_at: new Date().toISOString(),
       game_id: gameId,
+      image_url: imagePreview || undefined,
     }
 
     setMessages((current) => [...current, outgoing])
@@ -71,6 +78,7 @@ export function useChatSubmit({
     }
 
     setMessage("")
+    clearImageSelection()
   }
 
   return { handleSubmit }

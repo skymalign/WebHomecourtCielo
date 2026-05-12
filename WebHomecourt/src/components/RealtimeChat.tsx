@@ -24,6 +24,7 @@ export type ChatMessage = {
   message: string
   created_at: string
   game_id: number | null
+  image_url?: string
 }
 //Groserias coloquiales lista vacia que sera llena por llamada a BD
 //Despues pasar a IA que identifique hasta sarcasmo en donde estan siendo groseros
@@ -125,7 +126,10 @@ function RealtimeChat({ gameId = null, isGameLoading = false, onOpenPrivateList 
   const [displayName, setDisplayName] = useState("")
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null)
   //Carga de nombre y suscripcion al canal
   useEffect(() => {
@@ -216,6 +220,28 @@ function RealtimeChat({ gameId = null, isGameLoading = false, onOpenPrivateList 
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
+  //Manejar selección de imagen
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file && file.type.startsWith("image/")) {
+      setSelectedImage(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  //Limpiar imagen seleccionada
+  const clearImageSelection = () => {
+    setSelectedImage(null)
+    setImagePreview(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
   //Hook para enviar mensaje
   const { handleSubmit } = useChatSubmit({
     message,
@@ -227,6 +253,9 @@ function RealtimeChat({ gameId = null, isGameLoading = false, onOpenPrivateList 
     setError,
     setMessages,
     setMessage,
+    selectedImage,
+    imagePreview,
+    clearImageSelection,
   })
 
   return (
@@ -260,7 +289,40 @@ function RealtimeChat({ gameId = null, isGameLoading = false, onOpenPrivateList 
             onOpenPrivate={onOpenPrivateList}
             footer={
               <>
+                {imagePreview && (
+                  <div className="relative w-full">
+                    <div className="flex items-center gap-2 p-2 bg-gray-100 rounded-lg">
+                      <img 
+                        src={imagePreview} 
+                        alt="Preview" 
+                        className="h-16 w-16 object-cover rounded"
+                      />
+                      <button
+                        type="button"
+                        onClick={clearImageSelection}
+                        className="ml-auto px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
                 <form onSubmit={handleSubmit} className="w-full flex items-center gap-3">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-4 py-3 rounded-2xl bg-gray-200 hover:bg-gray-300 text-gray-700 transition-all duration-200 flex items-center justify-center"
+                    title="Attach image"
+                  >
+                    📎
+                  </button>
                   <input
                     className="flex-1 h-11 rounded-2xl border border-black/25 px-4 text-lg outline-none focus:ring-2 focus:ring-purple-400 transition"
                     type="text"
@@ -300,6 +362,13 @@ function RealtimeChat({ gameId = null, isGameLoading = false, onOpenPrivateList 
                           .replace("PM", "p.m.")}
                       </time>
                     </div>
+                    {item.image_url && (
+                      <img 
+                        src={item.image_url} 
+                        alt="Message attachment" 
+                        className="max-w-xs max-h-64 rounded-lg my-2 object-cover"
+                      />
+                    )}
                     <p className="justify-start text-black text-base font-normal font-['Graphik']">{item.message}</p>
                   </article>
                 ))
