@@ -113,8 +113,7 @@ function EditAvatar() {
       } catch (error) {
         console.error(error)
       } finally {
-        if (!mounted) return
-        setLoading(false)
+        if (mounted) setLoading(false)
       }
     }
 

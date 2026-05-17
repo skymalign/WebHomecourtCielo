@@ -55,9 +55,11 @@ jobs:
 
       - name: Instalar dependencias
         run: npm ci
+        working-directory: WebHomecourt
 
       - name: Lint
         run: npm run lint
+        working-directory: WebHomecourt
         # Si no tienes lint configurado, reemplazar con:
         # run: echo "Sin lint configurado aún"
 
@@ -76,9 +78,11 @@ jobs:
 
       - name: Instalar dependencias
         run: npm ci
+        working-directory: WebHomecourt
 
       - name: Verificar build
         run: npm run build
+        working-directory: WebHomecourt
         env:
           # Variables mínimas para que el build no falle por variables faltantes
           # Path A (Next.js)
