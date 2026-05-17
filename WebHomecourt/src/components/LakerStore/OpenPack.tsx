@@ -72,8 +72,6 @@ async function buyPack(pack_id: number, user_id: string) {
 }
 
 function OpenPack(prop: OpenPackProp) {
-    if (!prop.open) return null
-
     // Vars that will be updated as it opens
     const [openText, setOpenText] = useState(''); // Starting text used when the pop-up opens
     const [openClickCount, setOpenClickCount] = useState(0); // User hasn't clicked the button
@@ -87,11 +85,13 @@ function OpenPack(prop: OpenPackProp) {
 
     // Initial function to render the base components
     useEffect(() => {
+        if (!prop.open) return
+
         setOpenClickCount(0);
         setImageURL(prop.packImg);
         setOpenText('Press the pack or the open button to see what you get!');
         setOpenTextButton("OPEN");
-    }, [prop.open, prop.packId]);
+    }, [prop.open, prop.packId, prop.packImg]);
 
     // Function to handle inner clicking and switching images
     async function opening() {
@@ -188,6 +188,8 @@ function OpenPack(prop: OpenPackProp) {
     }
 
     // Robando basic struct de pop-up de pantalla Adolfo
+    if (!prop.open) return null
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/40" />
