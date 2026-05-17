@@ -6,7 +6,7 @@ name: CI/CD — DEV
 
 on:
   push:
-    branches: [develop]
+    branches: [dev]
 
 # Un solo deploy a la vez en este entorno
 concurrency:
