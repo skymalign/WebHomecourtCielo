@@ -50,9 +50,16 @@ jobs:
         with:
           version: latest
 
-      - name: Aplicar migraciones
-        run: supabase db push --db-url "${{ secrets.DEV_DB_URL }}"
+      - name: Link proyecto Supabase
+        run: supabase link --project-ref byjiphyowcqsywusgzid
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
+      - name: Aplicar migraciones
+        run: supabase db push
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
   # ── 3. Deploy a Vercel ───────────────────────────────────────────────────────
   deploy:
     name: Deploy → DEV
