@@ -57,6 +57,7 @@ jobs:
 
       - name: Aplicar migraciones
         run: supabase db push
+        working-directory: WebHomecourt
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
