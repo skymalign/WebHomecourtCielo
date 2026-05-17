@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useCallback, useEffect, useState, useContext } from "react";
 import type { ReactNode} from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
@@ -36,14 +36,14 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true); // Empieza en true hasta que supabase confirme si hay sesión activa o no
   const [gender, setGender] = useState<number | null>(null);
 
-  const updateLastSeen = async (userId: string) => {
+  const updateLastSeen = useCallback(async (userId: string) => {
     await supabase
       .from('user_laker')
       .update({ last_seen: new Date().toISOString() })
       .eq('user_id', userId);
-  };
+  }, []);
 
-  const fetchUserData = (userId: string) => {
+  const fetchUserData = useCallback((userId: string) => {
     // actualizar last_seen 
     updateLastSeen(userId); 
 
@@ -58,7 +58,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         setPhotoUrl(data?.photo_url ?? null);
         setGender(data?.gender ?? null);
       });
-  };
+  }, [updateLastSeen]);
   // Obtiene sesion actual y escucha cambios de autenticacion
   useEffect(() => {
     // Sesion actual de Supabase
@@ -89,7 +89,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       listener?.subscription.unsubscribe();
     };
-  }, []);
+  }, [fetchUserData]);
 
   // Iniciar sesion con correo y contraseña
   const signIn = async (email: string, password: string) => {
