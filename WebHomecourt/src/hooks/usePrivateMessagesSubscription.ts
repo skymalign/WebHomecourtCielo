@@ -14,7 +14,7 @@ function useActualizarMessPriv({conversationId, listenToAll = false, onMessageRe
   const callbackRef = useRef(onMessageReceived)
   useEffect(() => {
     callbackRef.current = onMessageReceived
-  })
+  }, [onMessageReceived])
   useEffect(() => {
     // No hacer nada si no hay nada que escuchar
     if (!conversationId && !listenToAll) return
@@ -31,7 +31,7 @@ function useActualizarMessPriv({conversationId, listenToAll = false, onMessageRe
       // Escuchar TODOS los cambios en la tabla de mensajes
       // AQUI ESTOY USANDO WEBSOCKETSSS por medio de WAL
       channel.on("postgres_changes", config, (payload) => {
-        onMessageReceived?.(payload)
+        callbackRef.current?.(payload)
       })
     } else if (conversationId) {
       // Escuchar solo cambios de una conv
@@ -39,7 +39,7 @@ function useActualizarMessPriv({conversationId, listenToAll = false, onMessageRe
         "postgres_changes",
         { ...config, filter: `conversation_id=eq.${conversationId}` },
         (payload) => {
-          onMessageReceived?.(payload)
+          callbackRef.current?.(payload)
         }
       )
     }

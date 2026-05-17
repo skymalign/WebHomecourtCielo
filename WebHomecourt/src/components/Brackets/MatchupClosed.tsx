@@ -1,6 +1,5 @@
 import type { Matchup } from "./Brackets"
 function MatchupClosed({match}:{match: Matchup}) {
-  match.winner_id
   return(
     <div className="flex flex-col gap-2 p-4 border-[#E7E6E8] border-1 bg-[#E7E6E8] rounded-xl shadow">
       <div>
